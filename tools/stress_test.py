@@ -59,7 +59,7 @@ def main():
         ("update:contradict",    "今はNode.jsよりDeno使ってる", {"update", "create", "reinforce"}),
         ("create:unrelated",     "週末は登山が趣味で月2回は山に行く", {"create"}),
         ("ignore:greeting",      "おはよう", {"ignore", "create"}),
-        ("create:another-domain","Bluemap Minecraft サーバを 192.168.1.7 で動かしている", {"create"}),
+        ("create:another-domain","Bluemap Minecraft サーバを 10.0.0.1 で動かしている", {"create"}),
         ("reinforce:second-hit", "登山では北アルプス系をよく回る", {"reinforce", "update", "create"}),
     ]
 

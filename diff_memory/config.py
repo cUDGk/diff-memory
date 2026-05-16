@@ -5,13 +5,13 @@ from dataclasses import dataclass
 @dataclass
 class Config:
     db_path: str = os.environ.get("DIFF_MEM_DB", "memory.db")
-    # 既定は minipc (Tailscale) の Ollama。MoE Opus4.7 distill が GPU で warm 稼働。
-    # ローカル運用に切替えたい場合: DIFF_MEM_OLLAMA_URL=http://localhost:11434
-    ollama_url: str = os.environ.get("DIFF_MEM_OLLAMA_URL", "http://100.83.48.127:11434")
-    # 既定は minipc 上の qwen36-claude:fixed (Qwen3.6 35B-A3B Claude4.7 Opus distill)。
-    # GPU offload (Vulkan) で warm 16 tok/s, 判定 ~1-2s。
-    # ローカル CPU で動かす場合は qwen3:4b (~10s/判定) か qwen36-opus47 (warm ~38s/判定、要22GB free)。
-    llm_model: str = os.environ.get("DIFF_MEM_MODEL", "qwen36-claude:fixed")
+    # 既定はローカル Ollama。リモート Ollama を使う場合は環境変数で上書き:
+    #   DIFF_MEM_OLLAMA_URL=http://<host>:11434
+    ollama_url: str = os.environ.get("DIFF_MEM_OLLAMA_URL", "http://localhost:11434")
+    # 既定は qwen3:4b (~10s/判定, CPU でも動く軽量モデル)。
+    # 大きいモデルや独自タグを使う場合は環境変数で上書き:
+    #   DIFF_MEM_MODEL=qwen2.5:32b 等
+    llm_model: str = os.environ.get("DIFF_MEM_MODEL", "qwen3:4b")
     # 既定は in-process の sentence-transformers (CLI 終了で解放されるので Ollama 側 RAM を圧迫しない)。
     # 完全 torch 不要にしたい場合: DIFF_MEM_EMBED_BACKEND=ollama DIFF_MEM_EMBED_MODEL=bge-m3
     embed_backend: str = os.environ.get("DIFF_MEM_EMBED_BACKEND", "sentence-transformers")
@@ -19,7 +19,7 @@ class Config:
     novelty_threshold: float = float(os.environ.get("DIFF_MEM_NOVELTY", "0.25"))
     top_n_candidates: int = int(os.environ.get("DIFF_MEM_TOP_N", "5"))
     llm_timeout_sec: int = int(os.environ.get("DIFF_MEM_LLM_TIMEOUT", "600"))
-    # minipc 既定だと他のスクリプトと GPU 取り合うため控えめ。専用機なら "6h" 等に。
+    # Ollama サーバが他のスクリプトと GPU を取り合う運用なら控えめに。専用機なら "6h" 等に。
     llm_keep_alive: str = os.environ.get("DIFF_MEM_KEEP_ALIVE", "5m")
 
     # スコアリング重み (search 時)
